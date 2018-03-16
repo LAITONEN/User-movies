@@ -15,6 +15,7 @@ welcome = 'Welcome to our app!\n'
 # we have 2 identical users and users are not being saved
 # sign up should log out the current user if exists
 
+
 def menu():
     global welcome, user, user_choice, new_movie
     greetings = f'Hello, {user.name}!\n' if user else ''
@@ -50,10 +51,14 @@ def menu():
             user = None
         name = input('Your username: ')
         with open('users.txt', 'r') as f:
-            json_user = list(filter(lambda user: user['name'] == name, json.load(f)))
+            json_user = list(
+                filter(lambda user: user['name'] == name, json.load(f)))
+            print('hsi')
             if len(json_user) == 0:
-                print(f'\nUser {name} was not found. Please, create a new account.\n')
+                print(
+                    f'\nUser {name} was not found. Please, create a new account.\n')
             if len(json_user) == 1:
+                print('hi')
                 user = User.log_in_from_json(json_user[0])
 
     elif user_choice == 3:
@@ -70,7 +75,8 @@ def menu():
             response = input(f'Do you want to add "{new_movie["title"]}" to your collection?\n'
                              'Enter "y" for "yes" or "n" for "no"\n')
             response = 'add movie' if response == 'y' else 'don\'t add movie' if response == 'n' else None
-        if response == 'add movie' and user != None: user_choice = 4
+        if response == 'add movie' and user != None:
+            user_choice = 4
         elif response == 'add movie' and user == None:
             response = None
             while response not in ['c', 'l', 'm', 'q']:
@@ -94,7 +100,6 @@ def menu():
                     user_choice = 9
                     menu()
 
-
     elif user_choice == 4:
         if new_movie:
             while response not in ['y', 'n']:
@@ -114,7 +119,8 @@ def menu():
             if response != 's':
                 new_movie = all_movies[response]
                 user.add_movie(new_movie)
-            else: new_movie = False
+            else:
+                new_movie = False
         if new_movie != False:
             response = None
             while response not in ['y', 'n']:
@@ -134,15 +140,18 @@ def menu():
         user.watch_movie(new_movie['title'])
 
     elif user_choice == 6:
-        user.print_all_movies()
-        response = input(f'\nHit enter to proceed to the main menu.')
+        if user:
+            user.print_all_movies()
+            response = input(f'\nHit enter to proceed to the main menu.')
+        else:
+            print('No user exists. Create an account first or log in to an existing one.')
 
     elif user_choice == 7:
         user.save()
     elif user_choice == 8:
         user_choice = None
         log_out()
-    elif user_choice != 9:
+    if user_choice != 9:
         user_choice = None
         welcome = ''
         menu()
@@ -162,7 +171,8 @@ def select_movie(all_movies):
             print(f'{index+1}. {movie["title"]}')
         response = input()
         try:
-            if response != 's': response = int(response)
+            if response != 's':
+                response = int(response)
         except ValueError:
             print('Wrong input! Try again.')
     index = response - 1
@@ -172,44 +182,5 @@ def select_movie(all_movies):
 # 3. when a user created a movie and wants to add it to their collection, but are not logged-in =>
 # => pass a callback to menu() / a new value of user_choice to actually save the movie after logging
 
+
 menu()
-
-# my_movie = Movie('Inception', 'Science fiction', 'Nolan', '2010')
-# my_movie2 = Movie('The Matrix', 'Science fiction', 'Wachowski Brothers', '1999')
-# my_movie3 = Movie('Fantastic Beasts', 'Science fiction', 'David Yates', '2016')
-# my_movie4 = Movie('Star Wars 8', "Science Fiction", 'Not J.J. Abrams', '2017')
-# my_movie5 = Movie('Star Wars 7', "Science Fiction", 'J.J. Abrams', '2015')
-# user = User('Eduard')
-# user2 = User('John')
-
-
-# user.add_movie(my_movie)
-# user.add_movie(my_movie2)
-# user.add_movie(my_movie3)
-# user.add_movie(my_movie4)
-# user.add_movie(my_movie5)
-# user.watch_movie('Inception')
-# user2.add_movie(my_movie)
-# user2.add_movie(my_movie4)
-# user2.watch_movie('Star Wars 8')
-#
-#
-# user.save_data()
-# user.get_data()
-# user.watch_movie('Star Wars')
-# user.save_data()
-# user.get_data()
-# user3 = User.load_from_csv('file')
-# user3.watch_movie('Inception')
-# user3.save_data()
-# user3.get_data()
-
-# with open('file_json.txt', 'w') as f:
-#     json.dump(user.to_json(), f)
-
-# with open('file_json.txt', 'r') as f:
-#     user = User.log_in_from_json(json.load(f))
-#     user.print_all_movies()
-#     user.add_movie(my_movie2)
-#     user.watch_movie(my_movie2.title)
-#     user.print_all_movies()
